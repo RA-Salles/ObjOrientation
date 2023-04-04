@@ -1,6 +1,6 @@
 ﻿Sobre este documento
         Autoria de Locust.
-Este documento visa compilar pseudocodigo para organizar a atividade da aula 1-1 de orientação a objetos. 
+Este documento visa compilar pseudocodigo para organizar a atividade da aula 1-1 de orientação a objetos. Dito isso, ao longo do documento, a ideia é descrever uma biblioteca para desenhar as figuras e linhas de funções providas. 
 
 
 Arquivo 1: linha
@@ -33,6 +33,9 @@ Arquivo 2: figura
                 Uma figura vai ser tratada basicamente como uma coleção de linhas e ou curvas. A figura sempre será fechada e isso que a diferencia de uma curva. Se ela detectar uma forma não fechada, ela transforma numa forma fechada.
         Pseudocodigo:
                 Classe figura:
+                        Construtor():
+                                
+                        
                         
 Arquivo 3: curva
         Comentários e Notas:
@@ -51,7 +54,7 @@ Arquivo 3: curva
                         #por meio de manipulação de arquivo do que reconhecimento de string. 
                                 0. Cria lista de números de xinit a xfinal com dx = (xfinal-xinit)/n, tal que lista = [xinit, xinit + 1.dx, xinit + 2.dx, … , xfinal - dx, xfinal]. A lista contém precisão + 1 membros.
                                 1. Cria arquivo tempfunc.py
-                                2. Importa biblioteca de matematica (numpy, etc.)
+                                2. Importa biblioteca de matematica (numpy, etc.) (no tempfunc, vai ajudar o usuário a escrever funções. Se você não estiver a fim, vá em frente e crie sua própria biblioteca de matemática)
                                 3. Escreve def simplefunction(x):
                                 4. return *string*, onde string é a função provida pelo usuário como self.gerador
                                 5. Importar tempfunc dentro da função gerapontos
@@ -66,13 +69,18 @@ Arquivo 3: curva
                                         i += 1
                                         Inicio = [self.xlist[i], self,ylist[i]]
                                         fim = [self.xlist[i+1], self,ylist[i+1]]
-                                        Self.linhas[i] = linha(inicio, fim) #isso aqui evita ter que fazer o append. Como já temos o numero da precisão em self.prec, não tem necessidade de fazer o append!
+                                        Self.linhas[i] = linha(inicio, fim) #isso aqui evita ter que fazer o append. Como já temos o numero da precisão em self.prec, não tem necessidade de fazer o append! A razão de evitar isso é que:
+                                         #1. Não temos certeza se a linguagem que estariamos programando tem essa função por padrão;
+                                        #2. Sabe-se que a função append tende a ser bem computacionalmente intensiva!
                                         
                                         
 Arquivo 4: drawer
         Comentários e notas:
                 Drawer vai lidar com printar os resultados das operações até o momento. Eu quero que ele tenha uma lista de coisas que tem que desenhar e ele vai pintar cada um dos pixels necessários. Isso vai depender bastante da coisa das linhas, então se figuras são coleções de linha, ele vai ter que lidar com isso. Eu tenho medo, todavia, que para algumas funções, o drawer, ao invés de desenhar uma curva correta, faça um zig-zag. Isso pode indicar menor precisão que o necessário para visualizar a função, todavia!
                 A ideia é que o programa desenhe um grid integer e desenhe linha por linha do programa. 
+                Obs1: outra forma de facilitar desenhar as linhas seria passando uma lista dos objetos a serem desenhados para o objeto drawer. Aí caberia ao drawer discernir os objetos e desenhá-los posteriormente.
+                Obs2: o programa deve obter os pontos e, como temos pixels discretos, é necessário que o programa tenha as equações de cada reta a ser desenhada para obter os pontos baseados nas precisões adequadas e colorir os pixels corretos. Felizmente, ao menos, não estamos escrevendo código para um display de fato!
+                Obs3: lembrar de, na implementação, fazer questão de fazer os truncamentos para transformar floats em ints, ou teremos problemas para mostrar o gráfico. Funcionalidades avançadas incluem construir a opção de mudar a escala do gráfico.
         Pseudocódigo:
                 DEFINA CONSTANTE RESX = 200 #constantes de resolução. Podem ser alteradas, posteriormente. 
                 DEFINA CONSTANTE RESY = 200
@@ -90,10 +98,25 @@ Arquivo 4: drawer
                                 #ascii.
                         2. 
                         gridliner(self):
-                                1. 
+                                1. Constroi função de primeiro grau que gera as linhas para cada par início-fim por meio do método y-yo =m(x-xo).
+                                2. Cria lista maior que contém todos os pontos que devem ser pintados para cada intervalo. #A precisão é arbitrária, mas é importante ter o suficiente para 
+#não deixar pixels não pintados na tela do usuário.
                         exec(self): #Isso aqui desenha as linhas. Todas elas.
                                 1. Printa linha por linha do self.grid.
 1.1. Itera pelas linhas self.grid[i] e constroi strings a partir delas.
 1.2. Printa cada linha sequencialmente.
- 
-                        update(self): #substitui uma ou mais linhas
+                 #obs - linhas devem
+                        update(self, lista): #substitui linhas.
+                                Self.lines = lista
+
+
+Arquivo 5: Main
+        Comentários e notas:
+                Esse arquivo, como não descreve nenhuma classe, é moderadamente opcional. Isso aqui seria a techdemo, onde mostramos pro usuário que o programa de fato desenha as linhas.
+        Pseudocódigo:
+                Função main:
+1. Obtenha do usuário a escolha de quantas linhas desenhar. Crie objetos linha. 
+2. Componha uma lista de linhas para cada linha obtida.
+3. Passe a lista de linhas para um objeto drawer.
+4. drawer.gridmaker(); drawer,gridliner(); drawer.exec().
+5. Se desenhado corretamente, teremos uma série de pontinhos na tela do usuário que se assemelha bastante a um gráfico das linhas que ele pediu para desenhar.
